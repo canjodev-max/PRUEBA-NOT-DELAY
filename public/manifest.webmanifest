@@ -1,0 +1,23 @@
+{
+  "name": "Not Delay - Juegos",
+  "short_name": "Not Delay",
+  "description": "PWA de juegos Not Delay",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/icons/ico-oscu.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/ico-clar.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
