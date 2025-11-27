@@ -55,17 +55,17 @@ export default function Cronometro40(){
   }
 
   return (
-    <div className="relative w-full flex flex-col items-center justify-center select-none py-4" onClick={tap}>
+    <div className="relative w-full h-[70vh] sm:h-[75vh] flex flex-col items-center justify-center select-none" onClick={tap}>
       <motion.div 
         key={time} 
-        className={`font-black leading-none text-glow ${time<=10?'text-rojo':time<=20?'text-amarillo':'text-turquesa'} text-[18vw] sm:text-[14vw] md:text-[10vw] lg:text-[8vw] xl:text-[6vw]`} 
+        className={`font-black leading-none text-glow ${time<=10?'text-rojo':time<=20?'text-amarillo':'text-turquesa'} text-[45vw] sm:text-[40vw] md:text-[35vw] lg:text-[30vw] xl:text-[25vw]`} 
         initial={{scale:0.9,opacity:0}} 
         animate={{scale:1,opacity:1}} 
         transition={{duration:0.25}}
       >
         {time}
       </motion.div>
-      <motion.p className="mt-2 text-xs sm:text-sm text-gray-400 text-center px-4" animate={{opacity:running?0.5:1}}>
+      <motion.p className="mt-4 text-xs sm:text-sm md:text-base text-gray-400 text-center px-4" animate={{opacity:running?0.5:1}}>
         {running?'Toca para reiniciar':'Toca para iniciar'}
       </motion.p>
     </div>

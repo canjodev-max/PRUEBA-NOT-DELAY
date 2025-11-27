@@ -68,6 +68,13 @@ export default function Cronometro({ onExit }){
     }
   }
   
+  const finalizarRonda = (e)=>{ 
+    e.stopPropagation()
+    setLocalTime(15)
+    setGlobalTime(120)
+    setRunning(false)
+  }
+  
   const resetAll = ()=>{ setLocalTime(15); setGlobalTime(120); setRunning(false); setShowFinishedModal(false) }
   const exit = ()=>{ resetAll(); if(onExit) onExit() }
   const fmt = s => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`
@@ -82,9 +89,20 @@ export default function Cronometro({ onExit }){
         <span className={`text-base sm:text-lg md:text-xl font-bold ${globalTime<=30?'text-rojo':globalTime<=60?'text-amarillo':'text-violeta'}`}>{fmt(globalTime)}</span>
       </motion.div>
       <div className="flex-1 flex flex-col items-center justify-center">
-        <motion.div key={localTime} className={`font-black leading-none text-glow ${localTime<=5?'text-rojo':localTime<=8?'text-amarillo':'text-turquesa'} text-[22vw] sm:text-[18vw] md:text-[12vw] lg:text-[10vw] xl:text-[8vw]`} initial={{scale:0.9,opacity:0}} animate={{scale:1,opacity:1}} transition={{duration:0.25}}>{localTime}</motion.div>
+        <motion.div key={localTime} className={`font-black leading-none text-glow ${localTime<=5?'text-rojo':localTime<=8?'text-amarillo':'text-turquesa'} text-[45vw] sm:text-[40vw] md:text-[35vw] lg:text-[30vw] xl:text-[25vw]`} initial={{scale:0.9,opacity:0}} animate={{scale:1,opacity:1}} transition={{duration:0.25}}>{localTime}</motion.div>
         <motion.p className="mt-4 text-xs sm:text-sm md:text-base text-gray-400 text-center px-4" animate={{opacity:running?0.5:1}}>{running?'Toca para reiniciar':'Toca para iniciar'}</motion.p>
-      </div>      <AnimatePresence>
+      </div>
+
+      {/* Botón Finalizar Ronda */}
+      <motion.button
+        onClick={finalizarRonda}
+        whileTap={{ scale: 0.95 }}
+        className="mb-6 px-4 py-2 text-xs sm:text-sm font-semibold bg-naranja/20 hover:bg-naranja/30 text-naranja rounded-lg border border-naranja/40"
+      >
+        Finalizar Ronda
+      </motion.button>
+
+      <AnimatePresence>
         {showFinishedModal && (
           <motion.div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 px-4" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
             <motion.div className="glass-effect rounded-2xl sm:rounded-3xl p-6 sm:p-8 w-full max-w-sm text-center" initial={{scale:0.6,y:40}} animate={{scale:1,y:0}} exit={{scale:0.6,y:40}} transition={{type:'spring',stiffness:180,damping:14}}>
