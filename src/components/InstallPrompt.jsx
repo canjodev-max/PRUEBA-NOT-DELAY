@@ -7,6 +7,7 @@ export default function InstallPrompt() {
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [showIOSPrompt, setShowIOSPrompt] = useState(false);
+  const IOS_DISMISS_KEY = 'nd_ios_install_prompt_dismissed';
 
   useEffect(() => {
     const ua = window.navigator.userAgent;
@@ -17,10 +18,13 @@ export default function InstallPrompt() {
     setIsIOS(isiOSDevice && isSafari);
     setIsStandalone(standalone);
     
-    // Show iOS prompt if it's iOS Safari and not already installed
-    if (isiOSDevice && isSafari && !standalone) {
-      setShowIOSPrompt(true);
-    }
+    // Show iOS prompt if it's iOS Safari and not already installed and not dismissed
+    try {
+      const dismissed = localStorage.getItem(IOS_DISMISS_KEY) === '1';
+      if (isiOSDevice && isSafari && !standalone && !dismissed) {
+        setShowIOSPrompt(true);
+      }
+    } catch {}
 
     const onBeforeInstallPrompt = (e) => {
       e.preventDefault();
@@ -73,7 +77,7 @@ export default function InstallPrompt() {
             <span className="ml-1">→ Añadir a pantalla de inicio.</span>
           </div>
           <button
-            onClick={() => setShowIOSPrompt(false)}
+            onClick={() => { try { localStorage.setItem(IOS_DISMISS_KEY, '1'); } catch {}; setShowIOSPrompt(false); }}
             className="text-sm px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 active:bg-white/30 shrink-0"
           >
             Cerrar
