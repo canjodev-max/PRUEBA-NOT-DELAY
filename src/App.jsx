@@ -68,11 +68,13 @@ function App(){
     } else if (screen === 'menu') {
       setSelectedGame(null); setScreen('library')
     } else if (screen === 'library') {
-      // From library, attempt to exit: go back in history or close
+      // Confirm exit from library
+      const shouldExit = window.confirm('¿Deseas salir de la aplicación?')
+      if (!shouldExit) return
+      // Attempt to exit: go back if possible or navigate away
       if (window.history.length > 1) {
         window.history.back()
       } else {
-        // window.close may be ignored; navigate to blank
         window.location.href = 'about:blank'
       }
     }
