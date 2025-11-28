@@ -47,16 +47,18 @@ export default function InstallPrompt() {
   }, []);
 
   const handleInstall = async () => {
+    // On iOS, show instructions after clicking Install
+    if (isIOS && !isStandalone) {
+      setShowIOSPrompt(true);
+      setVisible(false);
+      return;
+    }
     if (!deferredPrompt) return;
     setInstalling(true);
     try {
       deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === "accepted") {
-        setVisible(false);
-      } else {
-        setVisible(false);
-      }
+      await deferredPrompt.userChoice;
+      setVisible(false);
       setDeferredPrompt(null);
     } catch (_) {
       setVisible(false);
