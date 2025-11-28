@@ -21,16 +21,19 @@ function App(){
 
   // Push history state on screen changes so hardware back works
   useEffect(() => {
+    // Ensure we have a baseline history entry to avoid OS exiting the PWA
+    try {
+      if (!window.history.state) {
+        window.history.replaceState({ screen: 'splash' }, '', '#splash')
+      }
+    } catch {}
+
     if (screen) {
       try {
         const state = { screen, selectedGame, selectedFunction }
         const hash = `#${screen}`
-        // Replace for splash to avoid stacking, push for others
-        if (screen === 'splash') {
-          window.history.replaceState(state, '', hash)
-        } else {
-          window.history.pushState(state, '', hash)
-        }
+        // Always push state to create a back stack within the app
+        window.history.pushState(state, '', hash)
       } catch {}
     }
   }, [screen, selectedGame, selectedFunction])
@@ -68,15 +71,10 @@ function App(){
     } else if (screen === 'menu') {
       setSelectedGame(null); setScreen('library')
     } else if (screen === 'library') {
-      // Confirm exit from library
-      const shouldExit = window.confirm('¿Deseas salir de la aplicación?')
-      if (!shouldExit) return
-      // Attempt to exit: go back if possible or navigate away
-      if (window.history.length > 1) {
-        window.history.back()
-      } else {
-        window.location.href = 'about:blank'
-      }
+      // Do not exit the app; consume back and stay in library
+      // Optionally navigate to splash if desired
+      // window.history.back() here could exit the app; avoid calling it
+      setScreen('library')
     }
   }
 
