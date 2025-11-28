@@ -5,6 +5,7 @@ import GameLibrary from './GameLibrary'
 import GameMenu from './GameMenu'
 import GameFunction from './GameFunction'
 import AnimatedBackground from './components/AnimatedBackground'
+import InstallPrompt from './components/InstallPrompt'
 
 function App(){
   const [screen, setScreen] = useState('splash')
@@ -28,6 +29,7 @@ function App(){
   return (
     <div className="relative min-h-screen">
       <AnimatedBackground />
+      <InstallPrompt />
       <AnimatePresence mode="wait">
         {screen==='splash' && <SplashScreen key="splash"/>}
         {screen==='library' && <GameLibrary key="lib" onSelect={onSelectGame}/>} 
