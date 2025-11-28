@@ -4,8 +4,16 @@ export default function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [visible, setVisible] = useState(false);
   const [installing, setInstalling] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
+    const ua = window.navigator.userAgent;
+    const isiOSDevice = /iPhone|iPad|iPod/i.test(ua);
+    const isSafari = /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
+    setIsIOS(isiOSDevice && isSafari);
+    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone);
+
     const onBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -45,6 +53,27 @@ export default function InstallPrompt() {
       setInstalling(false);
     }
   };
+
+  // iOS Safari: show instructions if not installed
+  if (isIOS && !isStandalone) {
+    return (
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+        <div className="flex items-center gap-3 rounded-xl bg-black/80 backdrop-blur px-4 py-3 shadow-lg border border-white/10 text-white">
+          <div className="text-sm">
+            Para instalar en iPhone:
+            <span className="ml-1">abre en Safari, pulsa Compartir</span>
+            <span className="ml-1">→ Añadir a pantalla de inicio.</span>
+          </div>
+          <button
+            onClick={() => setVisible(false)}
+            className="text-sm px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!visible) return null;
 
