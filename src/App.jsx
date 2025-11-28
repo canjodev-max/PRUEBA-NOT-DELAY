@@ -19,11 +19,63 @@ function App(){
     }
   },[screen])
 
+  // Push history state on screen changes so hardware back works
+  useEffect(() => {
+    if (screen) {
+      try {
+        const state = { screen, selectedGame, selectedFunction }
+        const hash = `#${screen}`
+        // Replace for splash to avoid stacking, push for others
+        if (screen === 'splash') {
+          window.history.replaceState(state, '', hash)
+        } else {
+          window.history.pushState(state, '', hash)
+        }
+      } catch {}
+    }
+  }, [screen, selectedGame, selectedFunction])
+
+  // Handle browser/device back button
+  useEffect(() => {
+    const onPopState = (e) => {
+      const st = e.state || {}
+      const target = st.screen || 'library'
+      if (target === 'library') {
+        setSelectedFunction(null)
+        setSelectedGame(null)
+        setScreen('library')
+      } else if (target === 'menu' && selectedGame) {
+        setSelectedFunction(null)
+        setScreen('menu')
+      } else if (target === 'function' && selectedGame && selectedFunction) {
+        setScreen('function')
+      } else {
+        // Fallback: go to library
+        setSelectedFunction(null)
+        setSelectedGame(null)
+        setScreen('library')
+      }
+    }
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [selectedGame, selectedFunction])
+
   const onSelectGame = (g)=>{ setSelectedGame(g); setScreen('menu') }
   const onSelectFunction = (f)=>{ setSelectedFunction(f); setScreen('function') }
   const onBack = () => {
-    if(screen==='function'){ setSelectedFunction(null); setScreen('menu') }
-    else if(screen==='menu'){ setSelectedGame(null); setScreen('library') }
+    if (screen === 'function') {
+      setSelectedFunction(null); setScreen('menu')
+    } else if (screen === 'menu') {
+      setSelectedGame(null); setScreen('library')
+    } else if (screen === 'library') {
+      // From library, attempt to exit: go back in history or close
+      if (window.history.length > 1) {
+        window.history.back()
+      } else {
+        // window.close may be ignored; navigate to blank
+        window.location.href = 'about:blank'
+      }
+    }
   }
 
   return (
